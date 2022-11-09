@@ -32,22 +32,33 @@ BigInt::BigInt(const BigInt &other) : number(other.number), sign(other.sign) {
     //empty
 }
 
-BigInt::~BigInt() noexcept {
-    //empty
-}
+BigInt::~BigInt() = default;
 
 void BigInt::checkStringIsNumeric(const std::string &str) {
     size_t str_length = str.length();
-    size_t i = (str[0] == '+' || str[0] == '-') ? 1 : 0;
-    for (; i < str_length; i++) {
+    for (size_t i = 0; i < str_length; i++) {
         if (!std::isdigit(str[i]))
             throw std::invalid_argument("Number must contain only digits.");
     }
 }
 
 void BigInt::setNumber(const std::string &str, int radix) {
-    checkStringIsNumeric(str);
-    number = str;
+    if (radix == 10) {
+        checkStringIsNumeric(str);
+        number = str;
+    } else {
+        BigInt result(ZERO);
+        BigInt power(ONE);
+        BigInt biRadix(radix);
+        size_t str_len = str.length();
+        for (size_t i = 0; i < str_len; i++){
+            char ch = str[i];
+            result += power * BigInt(ch - '0');
+            power *= biRadix;
+        }
+        number = result.number;
+    }
+    fixNegativeZero();
 }
 
 void BigInt::fixNegativeZero() {
@@ -60,18 +71,22 @@ void BigInt::setSign(bool s) {
     fixNegativeZero();
 }
 
-std::string BigInt::toString(int radix) const {
-    if (radix == 10)
-}
-
 BigInt &BigInt::operator=(const BigInt &b) {
     number = b.number;
     setSign(b.sign);
     return *this;
 }
 
-BigInt BigInt::operator~() const {
-
+std::string BigInt::toBinString() const {
+    BigInt copy(this->number);
+    BigInt radix(2);
+    std::string bin_str = "";
+    do {
+        bin_str += std::string(copy % radix);
+        copy /= radix;
+    } while (copy != ZERO);
+    std::reverse(bin_str.begin(), bin_str.end());
+    return bin_str;
 }
 
 BigInt &BigInt::operator++() {
@@ -116,7 +131,7 @@ BigInt &BigInt::operator/=(const BigInt &b) {
     return (*this);
 }
 
-/*BigInt &BigInt::operator^=(const BigInt &b) {
+BigInt &BigInt::operator^=(const BigInt &b) {
     (*this) = (*this) ^ b;
     return (*this);
 }
@@ -134,7 +149,7 @@ BigInt &BigInt::operator&=(const BigInt &b) {
 BigInt &BigInt::operator|=(const BigInt &b) {
     (*this) = (*this) | b;
     return (*this);
-}*/
+}
 
 BigInt BigInt::operator+() const {
     return BigInt(*this);
@@ -227,10 +242,10 @@ std::string BigInt::padLeft(const std::string &str, size_t length) {
 }
 
 std::string BigInt::add(const std::string &a, const std::string &b) {
-    size_t digits = (a.length() > b.length() ? a.length() : b.length());
-    std::string sum = padLeft("", digits);
-    std::string a_copy = padLeft(a, digits);
-    std::string b_copy = padLeft(b, digits);
+    size_t digitsCount = (a.length() > b.length() ? a.length() : b.length());
+    std::string sum = padLeft("", digitsCount);
+    std::string a_copy = padLeft(a, digitsCount);
+    std::string b_copy = padLeft(b, digitsCount);
     //add each digit pair
     int carry = 0;
     for (int i = a_copy.length() - 1; i >= 0; --i) {
@@ -378,6 +393,75 @@ std::pair<BigInt, BigInt> BigInt::divide(const BigInt &numerator, const BigInt &
 BigInt operator/(const BigInt &a, const BigInt &b) {
     std::pair<BigInt, BigInt> result = BigInt::divide(a, b);
     return result.first;
+}
+
+BigInt operator%(const BigInt &a, const BigInt &b) {
+    std::pair<BigInt, BigInt> result = BigInt::divide(a, b);
+    return result.second;
+}
+
+BigInt BigInt::operator~() const {
+    std::string binStr = this->toBinString();
+    size_t strLen = binStr.length();
+
+    for (size_t i = 0; i < strLen; i++)
+        binStr[i] = (binStr[i] == '1') ? '0' : '1';
+    binStr = removeLeadingZeros(binStr);
+    BigInt result = BigInt();
+    result.setNumber(binStr, 2);
+    result.setSign(!this->sign);
+    return result;
+}
+
+BigInt operator^(const BigInt &a, const BigInt &b) {
+    std::string firstBinStr = a.toBinString();
+    std::string secondBinStr = b.toBinString();
+    size_t maxLen = std::max(firstBinStr.length(), secondBinStr.length());
+    firstBinStr = BigInt::padLeft(firstBinStr, maxLen);
+    secondBinStr = BigInt::padLeft(secondBinStr, maxLen);
+
+    for (size_t i = 0; i < maxLen; i++)
+        firstBinStr [i] = ((firstBinStr[i] == '1') ^ (secondBinStr[i] == '1')) ? '1' : '0';
+    firstBinStr = BigInt::removeLeadingZeros(firstBinStr);
+
+    BigInt result = BigInt();
+    result.setNumber(firstBinStr, 2);
+    result.setSign(a.sign ^ b.sign);
+    return result;
+}
+
+BigInt operator&(const BigInt &a, const BigInt &b){
+    std::string firstBinStr = a.toBinString();
+    std::string secondBinStr = b.toBinString();
+    size_t maxLen = std::max(firstBinStr.length(), secondBinStr.length());
+    firstBinStr = BigInt::padLeft(firstBinStr, maxLen);
+    secondBinStr = BigInt::padLeft(secondBinStr, maxLen);
+
+    for (size_t i = 0; i < maxLen; i ++)
+        firstBinStr [i] = ((firstBinStr[i] == '1') && (secondBinStr[i] == '1')) ? '1' : '0';
+    firstBinStr = BigInt::removeLeadingZeros(firstBinStr);
+
+    BigInt result = BigInt();
+    result.setNumber(firstBinStr, 2);
+    result.setSign(a.sign && b.sign);
+    return result;
+}
+
+BigInt operator|(const BigInt &a, const BigInt &b) {
+    std::string firstBinStr = a.toBinString();
+    std::string secondBinStr = b.toBinString();
+    size_t maxLen = std::max(firstBinStr.length(), secondBinStr.length());
+    firstBinStr = BigInt::padLeft(firstBinStr, maxLen);
+    secondBinStr = BigInt::padLeft(secondBinStr, maxLen);
+
+    for (size_t i = 0; i < maxLen; i ++)
+        firstBinStr [i] = ((firstBinStr[i] == '1') || (secondBinStr[i] == '1')) ? '1' : '0';
+    firstBinStr = BigInt::removeLeadingZeros(firstBinStr);
+
+    BigInt result = BigInt();
+    result.setNumber(firstBinStr, 2);
+    result.setSign(a.sign || b.sign);
+    return result;
 }
 
 std::ostream &operator<<(std::ostream &o, const BigInt &i) {

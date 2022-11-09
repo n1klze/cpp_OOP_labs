@@ -3,9 +3,9 @@
 
 int main() {
     try {
-        BigInt a = BigInt("100000000000000000");
-        BigInt b = BigInt(INT_MAX);
-        std::cout << a / b;
+        BigInt a(5);
+        BigInt b(1);
+        std::cout << a + b;
     } catch (const std::exception &error) {
         std::cout << error.what() << std::endl;
     }

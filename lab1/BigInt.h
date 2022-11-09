@@ -3,6 +3,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <algorithm>
 
 class BigInt {
 private:
@@ -27,9 +28,9 @@ private:
 
     static std::string multiply(const std::string &, const std::string &);
 
-    static std::pair<BigInt, BigInt> divide(const BigInt&, const BigInt&);
+    static std::pair<BigInt, BigInt> divide(const BigInt &, const BigInt &);
 
-    std::string toString(int radix = 10) const;
+    std::string toBinString() const;
 
     static const BigInt ZERO;
     static const BigInt ONE;
@@ -39,12 +40,13 @@ public:
 
     BigInt(int);
 
-    BigInt(const std::string &); // бросать исключение std::invalid_argument при ошибке
+    BigInt(const std::string &);
+
     BigInt(const BigInt &);
 
     ~BigInt();
 
-    BigInt &operator=(const BigInt &);  //возможно присваивание самому себе!
+    BigInt &operator=(const BigInt &);
 
     BigInt operator~() const;
 
@@ -64,13 +66,13 @@ public:
 
     BigInt &operator/=(const BigInt &);
 
-    /*BigInt &operator^=(const BigInt &);
+    BigInt &operator^=(const BigInt &);
 
     BigInt &operator%=(const BigInt &);
 
     BigInt &operator&=(const BigInt &);
 
-    BigInt &operator|=(const BigInt &);*/
+    BigInt &operator|=(const BigInt &);
 
     BigInt operator+() const;  // unary +
     BigInt operator-() const;  // unary -
@@ -101,13 +103,13 @@ public:
 
     friend BigInt operator/(const BigInt &, const BigInt &);
 
-    /*friend BigInt operator^(const BigInt &, const BigInt &);
+    friend BigInt operator^(const BigInt &, const BigInt &);
 
     friend BigInt operator%(const BigInt &, const BigInt &);
 
     friend BigInt operator&(const BigInt &, const BigInt &);
 
-    friend BigInt operator|(const BigInt &, const BigInt &);*/
+    friend BigInt operator|(const BigInt &, const BigInt &);
 
     friend std::ostream &operator<<(std::ostream &o, const BigInt &i);
 };
