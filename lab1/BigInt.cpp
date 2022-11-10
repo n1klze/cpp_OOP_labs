@@ -45,7 +45,7 @@ void BigInt::checkStringIsNumeric(const std::string &str) {
 void BigInt::setNumber(const std::string &str, int radix) {
     if (radix == 10) {
         checkStringIsNumeric(str);
-        number = str;
+        number = removeLeadingZeros(str);
     } else {
         BigInt result(ZERO);
         BigInt power(ONE);
