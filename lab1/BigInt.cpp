@@ -51,8 +51,8 @@ void BigInt::setNumber(const std::string &str, int radix) {
         BigInt power(ONE);
         BigInt biRadix(radix);
         size_t str_len = str.length();
-        for (size_t i = 0; i < str_len; i++){
-            char ch = str[i];
+        for (size_t i = str_len; i > 0; i--) {
+            char ch = str[i - 1];
             result += power * BigInt(ch - '0');
             power *= biRadix;
         }
@@ -207,13 +207,9 @@ bool BigInt::operator>=(const BigInt &b) const {
 
 BigInt::operator int() const {
     int sum = 0;
-    int prevSum = 0;
-    int number_len = number.length();
-    for (int i = 0; i < number_len; i++) {
-        prevSum = sum;
+    size_t number_len = number.length();
+    for (size_t i = 0; i < number_len; i++) {
         sum = sum * 10 + number[i] - '0';
-        if (sum < prevSum)
-            throw std::overflow_error("Numeric overflow on conversion.");
     }
     return sum;
 }
@@ -421,7 +417,7 @@ BigInt operator^(const BigInt &a, const BigInt &b) {
     secondBinStr = BigInt::padLeft(secondBinStr, maxLen);
 
     for (size_t i = 0; i < maxLen; i++)
-        firstBinStr [i] = ((firstBinStr[i] == '1') ^ (secondBinStr[i] == '1')) ? '1' : '0';
+        firstBinStr[i] = ((firstBinStr[i] == '1') ^ (secondBinStr[i] == '1')) ? '1' : '0';
     firstBinStr = BigInt::removeLeadingZeros(firstBinStr);
 
     BigInt result = BigInt();
@@ -430,15 +426,15 @@ BigInt operator^(const BigInt &a, const BigInt &b) {
     return result;
 }
 
-BigInt operator&(const BigInt &a, const BigInt &b){
+BigInt operator&(const BigInt &a, const BigInt &b) {
     std::string firstBinStr = a.toBinString();
     std::string secondBinStr = b.toBinString();
     size_t maxLen = std::max(firstBinStr.length(), secondBinStr.length());
     firstBinStr = BigInt::padLeft(firstBinStr, maxLen);
     secondBinStr = BigInt::padLeft(secondBinStr, maxLen);
 
-    for (size_t i = 0; i < maxLen; i ++)
-        firstBinStr [i] = ((firstBinStr[i] == '1') && (secondBinStr[i] == '1')) ? '1' : '0';
+    for (size_t i = 0; i < maxLen; i++)
+        firstBinStr[i] = ((firstBinStr[i] == '1') && (secondBinStr[i] == '1')) ? '1' : '0';
     firstBinStr = BigInt::removeLeadingZeros(firstBinStr);
 
     BigInt result = BigInt();
@@ -454,8 +450,8 @@ BigInt operator|(const BigInt &a, const BigInt &b) {
     firstBinStr = BigInt::padLeft(firstBinStr, maxLen);
     secondBinStr = BigInt::padLeft(secondBinStr, maxLen);
 
-    for (size_t i = 0; i < maxLen; i ++)
-        firstBinStr [i] = ((firstBinStr[i] == '1') || (secondBinStr[i] == '1')) ? '1' : '0';
+    for (size_t i = 0; i < maxLen; i++)
+        firstBinStr[i] = ((firstBinStr[i] == '1') || (secondBinStr[i] == '1')) ? '1' : '0';
     firstBinStr = BigInt::removeLeadingZeros(firstBinStr);
 
     BigInt result = BigInt();
