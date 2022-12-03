@@ -2,15 +2,17 @@
 
 const std::string command_parser::CommandLineParser::kUsageMessage =
         "Usage: program [-h | --help] [filename1.life] [-i x | --input=x] [-o filename2.life | --output=filename2.life]\n"
-        "-------------------------------------------------------------------------------------------------------------\n"
+        "--------------------------------------------------------------------------------------------------------------\n"
         "-h, --help\n"
         "\tPrint (on the standard output) usage message with a description of command-line options.\n"
         "filename1.life\n"
-        "\tinput file with universe description in the Life 1.06 file format.\n"
+        "\tInput file with universe description in the Life 1.06 file format.\n"
+        "\tIf filename1.life is not specified, the default is to take a filed from default.life.\n"
         "-i x | --input=<x>\n"
         "\tSet the number of iterations to x.\n"
         "-o filename2.life, --output=filename2.life\n"
-        "\tPlace output in file filename2.life, where the universe will be save after the game ends.";
+        "\tPlace output in file filename2.life, where the universe will be save after the game ends.\n"
+        "\tIf is not specified, the game opens in console mode.";
 
 void command_parser::CommandLineParser::GetCommandLineOptions(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
@@ -66,4 +68,3 @@ void command_parser::CommandLineParser::GetCommandLineOptions(int argc, char **a
         }
     }
 }
-
