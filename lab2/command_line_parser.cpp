@@ -66,3 +66,4 @@ void command_parser::CommandLineParser::GetCommandLineOptions(int argc, char **a
         }
     }
 }
+

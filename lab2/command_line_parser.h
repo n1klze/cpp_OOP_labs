@@ -26,3 +26,4 @@ namespace command_parser {
 } //namespace command_parser
 
 #endif //LAB2_COMMAND_LINE_PARSER_H
+
