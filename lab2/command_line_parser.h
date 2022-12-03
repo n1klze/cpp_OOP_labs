@@ -1,8 +1,9 @@
 #ifndef LAB2_COMMAND_LINE_PARSER_H
 #define LAB2_COMMAND_LINE_PARSER_H
 
-#include <string>
+#include <iostream>
 #include <stdexcept>
+#include <string>
 
 namespace command_parser {
     class CommandLineParser {
@@ -13,9 +14,11 @@ namespace command_parser {
             std::string out_filename;
         };
 
+        static const std::string kUsageMessage;
+
         void GetCommandLineOptions(int argc, char **argv);
 
-        Data data() { return data_; };
+        Data data() const { return data_; };
 
     private:
         Data data_;
