@@ -1,9 +1,8 @@
 #include "command_line_parser.h"
-#include "game_field.h"
+#include "file_parser.h"
 
 int main(int argc, char **argv) {
     command_parser::CommandLineParser parser;
-
     try {
         parser.GetCommandLineOptions(argc, argv);
     } catch (const std::exception &except) {
