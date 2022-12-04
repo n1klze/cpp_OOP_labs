@@ -8,7 +8,7 @@ const std::string command_parser::CommandLineParser::kUsageMessage =
         "filename1.life\n"
         "\tInput file with universe description in the Life 1.06 file format.\n"
         "\tIf filename1.life is not specified, the default is to take a filed from default.life.\n"
-        "-i x | --input=<x>\n"
+        "-i x, --input=<x>\n"
         "\tSet the number of iterations to x.\n"
         "-o filename2.life, --output=filename2.life\n"
         "\tPlace output in file filename2.life, where the universe will be save after the game ends.\n"

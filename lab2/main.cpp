@@ -1,4 +1,5 @@
 #include "command_line_parser.h"
+#include "game_field.h"
 
 int main(int argc, char **argv) {
     command_parser::CommandLineParser parser;
