@@ -2,32 +2,33 @@
 #define LAB2_FILE_PARSER_H
 
 #include <fstream>
-#include <string>
 
 #include "game_field.h"
 
-namespace file_parser {
+namespace life {
     class FileParser {
     public:
         struct Format {
-            std::string kGameVersion              = "#Life 1.06";
-            std::string kNameOfUniverseIdentifier = "#N";
-            std::string kGameRulesIdentifier      = "#R";
-            std::string kBirthRulePrefix          = "B";
-            std::string kSurviveRulePrefix        = "S";
-            std::string kRuleSeparator            = "/";
+            const char kOptionSymbol                    = '#';
+            const std::string kGameVersion              = "#Life 1.06";
+            const std::string kNameOfUniverseIdentifier = "#N";
+            const std::string kGameRulesIdentifier      = "#R";
+            const char kBirthRulePrefix                 = 'B';
+            const char kSurviveRulePrefix               = 'S';
+            const char kRuleSeparator                   = '/';
         };
-
-        static const Format kFileFormat;
-
-        static const std::string kDefaultUniverseFilename;
 
         FileParser() = default;
 
         virtual ~FileParser() = default;
 
-        life::GameField ReadUniverseFromFile(std::string filename = kDefaultUniverseFilename);
+        life::GameField ReadUniverseFromFile(const std::string& filename = kDefaultUniverseFilename);
+
+    private:
+        friend void GetOption(std::ifstream &input_file, std::string &buffer, GameField &field);
+        static const Format kFileFormat;
+        static const std::string kDefaultUniverseFilename;
     };
-} //namespace file_parser
+} //namespace life
 
 #endif //LAB2_FILE_PARSER_H

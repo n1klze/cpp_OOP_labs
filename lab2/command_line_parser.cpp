@@ -15,7 +15,7 @@ const std::string command_parser::CommandLineParser::kUsageMessage =
         "\tIf is not specified, the game opens in console mode.";
 
 void command_parser::CommandLineParser::GetCommandLineOptions(int argc, char **argv) {
-    for (int i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; ++i) {
         std::string current_string = std::string(argv[i]);
         switch (current_string[0]) {
             case '-':

@@ -14,13 +14,12 @@ namespace command_parser {
             std::string out_filename;
         };
 
-        static const std::string kUsageMessage;
-
         void GetCommandLineOptions(int argc, char **argv);
 
         Data data() const { return data_; };
 
     private:
+        static const std::string kUsageMessage;
         Data data_;
     };
 } //namespace command_parser

@@ -1,18 +1,21 @@
 #ifndef LAB2_GAME_FIELD_H
 #define LAB2_GAME_FIELD_H
 
+#include <string>
+
 namespace life {
     class GameField {
     public:
         GameField();
 
-        ~GameField();
-
-        const std::string kUniverseName;
-        const size_t kWidth;
-        const size_t kHeight;
+        virtual ~GameField();
 
     private:
+        friend class FileParser;
+
+        std::string kUniverseName;
+        size_t kWidth;
+        size_t kHeight;
         bool *field_;
     };
 } //namespace life
