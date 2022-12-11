@@ -17,21 +17,22 @@ namespace life {
     class FileParser {
     public:
         struct Format {
-            const char kOptionSymbol = '#';
-            const std::string kGameVersion = "#Life 1.06";
+            const char kOptionSymbol                    = '#';
+            const std::string kGameVersion              = "#Life 1.06";
             const std::string kNameOfUniverseIdentifier = "#N";
-            const std::string kGameRulesIdentifier = "#R";
-            const char kBirthRulePrefix = 'B';
-            const char kSurviveRulePrefix = 'S';
-            const char kRuleSeparator = '/';
+            const std::string kGameRulesIdentifier      = "#R";
+            const std::string kBirthRulePrefix          = "B";
+            const std::string kSurvivalRulePrefix       = "S";
+            const std::string kRuleSeparator            = "/";
         };
 
-        struct HeaderData {
+        struct HeaderInfo {
             std::string name_of_universe;
-            std::set<int> birth;
-            std::set<int> survival;
+            GameField::GameRules rules_;
             size_t width = 100;
             size_t height = 100;
+            bool name_flag = false;
+            bool rule_flag = false;
         };
 
         FileParser() = default;
@@ -41,17 +42,21 @@ namespace life {
         life::GameField ReadUniverseFromFile(const std::string &filename = kDefaultUniverseFilename);
 
     private:
-        static void GetOption(const std::string &, GameField &, bool &, bool &);
+        void GetOption(const std::string &);
 
-        static void GetNameOfUniverse(const std::string &, GameField &, bool &);
+        void GetNameOfUniverse(const std::string &);
 
-        static void GetGameRules(const std::string &, GameField &, bool &);
+        void GetGameRules(const std::string &);
 
-        static void ParseGameRules(const std::string &, GameField &);
+        void ParseGameRules(const std::string &);
+
+        void GetBirthRuleValues(const std::string &, size_t &);
+
+        void GetSurvivalRuleValues(const std::string &, size_t &);
 
         static const Format kFileFormat;
         static const std::string kDefaultUniverseFilename;
-        HeaderData header_;
+        HeaderInfo header_;
     };
 } //namespace life
 

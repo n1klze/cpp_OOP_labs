@@ -7,20 +7,27 @@
 namespace life {
     class GameField {
     public:
+        /*struct GameRules {
+            std::set<int> birth;
+            std::set<int> survival;
+        };
+*/
+        GameField() = default;
+
+        //GameField(std::string name_of_universe, GameRules rules, );
+
+        virtual ~GameField() = default;
+
+    private:
         struct GameRules {
             std::set<int> birth;
             std::set<int> survival;
         };
 
-        GameField() = default;
-
-        virtual ~GameField() = default;
-
-    private:
         friend class FileParser;
 
-        GameRules rules_;
         std::string universe_name_;
+        GameRules rules_;
         size_t width_;
         size_t height_;
         bool *field_;
