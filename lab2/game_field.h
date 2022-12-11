@@ -2,16 +2,12 @@
 #define LAB2_GAME_FIELD_H
 
 #include <string>
-#include <set>
+
+#include "game_rules.h"
 
 namespace life {
     class GameField {
     public:
-        /*struct GameRules {
-            std::set<int> birth;
-            std::set<int> survival;
-        };
-*/
         GameField() = default;
 
         //GameField(std::string name_of_universe, GameRules rules, );
@@ -19,11 +15,6 @@ namespace life {
         virtual ~GameField() = default;
 
     private:
-        struct GameRules {
-            std::set<int> birth;
-            std::set<int> survival;
-        };
-
         friend class FileParser;
 
         std::string universe_name_;

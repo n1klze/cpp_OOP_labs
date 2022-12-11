@@ -28,7 +28,7 @@ namespace life {
 
         struct HeaderInfo {
             std::string name_of_universe;
-            GameField::GameRules rules_;
+            GameRules rules_;
             size_t width = 100;
             size_t height = 100;
             bool name_flag = false;

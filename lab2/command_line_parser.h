@@ -16,7 +16,7 @@ namespace command_parser {
 
         void GetCommandLineOptions(int argc, char **argv);
 
-        Data data() const { return data_; };
+        Data data() const { return data_; }
 
     private:
         static const std::string kUsageMessage;
