@@ -3,6 +3,8 @@
 //#include "googletest/googletest/include/gtest/gtest.h"
 #include "gtest/gtest.h"
 
+using namespace b_int;
+
 class BigIntTestConstructorsTest : public ::testing::Test {
 public:
     std::string string[4] = {"-0", "-01234567890123456789", "01234567890123456789", "AB"};
