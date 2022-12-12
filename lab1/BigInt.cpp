@@ -1,5 +1,7 @@
 #include "BigInt.h"
 
+using namespace b_int;
+
 const BigInt BigInt::ZERO("0");
 const BigInt BigInt::ONE("1");
 
@@ -32,8 +34,6 @@ BigInt::BigInt(const BigInt &other) : number(other.number), sign(other.sign) {
     //empty
 }
 
-BigInt::~BigInt() = default;
-
 void BigInt::checkStringIsNumeric(const std::string &str) {
     size_t str_length = str.length();
     for (size_t i = 0; i < str_length; i++) {
@@ -43,7 +43,7 @@ void BigInt::checkStringIsNumeric(const std::string &str) {
 }
 
 void BigInt::setNumber(const std::string &str, int radix) {
-    if (radix == 10) {
+    if (radix == DEC) {
         checkStringIsNumeric(str);
         number = removeLeadingZeros(str);
     } else {
@@ -79,7 +79,7 @@ BigInt &BigInt::operator=(const BigInt &b) {
 
 std::string BigInt::toBinString() const {
     BigInt copy(this->number);
-    BigInt radix(2);
+    BigInt radix(BIN);
     std::string bin_str = "";
     do {
         bin_str += std::string(copy % radix);
@@ -289,7 +289,7 @@ std::string BigInt::subtract(const std::string &a, const std::string &b) {
     return sub;
 }
 
-BigInt operator+(const BigInt &a, const BigInt &b) {
+BigInt b_int::operator+(const BigInt &a, const BigInt &b) {
     BigInt sum;
     if (a.sign == b.sign) {
         sum.setNumber(BigInt::add(a.number, b.number));
@@ -308,7 +308,7 @@ BigInt operator+(const BigInt &a, const BigInt &b) {
     return sum;
 }
 
-BigInt operator-(const BigInt &a, const BigInt &b) {
+BigInt b_int::operator-(const BigInt &a, const BigInt &b) {
     //a - b = a + (-b)
     BigInt b_copy = b;
     b_copy.setSign(!b.sign);
@@ -351,7 +351,7 @@ std::string BigInt::multiply(const std::string &a, const std::string &b) {
     return product;
 }
 
-BigInt operator*(const BigInt &a, const BigInt &b) {
+BigInt b_int::operator*(const BigInt &a, const BigInt &b) {
     BigInt product;
     product.number = BigInt::multiply(a.number, b.number);
     product.setSign(a.sign != b.sign);
@@ -386,17 +386,17 @@ std::pair<BigInt, BigInt> BigInt::divide(const BigInt &numerator, const BigInt &
     return result;
 }
 
-BigInt operator/(const BigInt &a, const BigInt &b) {
+BigInt b_int::operator/(const BigInt &a, const BigInt &b) {
     std::pair<BigInt, BigInt> result = BigInt::divide(a, b);
     return result.first;
 }
 
-BigInt operator%(const BigInt &a, const BigInt &b) {
+BigInt b_int::operator%(const BigInt &a, const BigInt &b) {
     std::pair<BigInt, BigInt> result = BigInt::divide(a, b);
     return result.second;
 }
 
-BigInt BigInt::operator~() const {
+BigInt b_int::BigInt::operator~() const {
     std::string binStr = this->toBinString();
     size_t strLen = binStr.length();
 
@@ -409,7 +409,7 @@ BigInt BigInt::operator~() const {
     return result;
 }
 
-BigInt operator^(const BigInt &a, const BigInt &b) {
+BigInt b_int::operator^(const BigInt &a, const BigInt &b) {
     std::string firstBinStr = a.toBinString();
     std::string secondBinStr = b.toBinString();
     size_t maxLen = std::max(firstBinStr.length(), secondBinStr.length());
@@ -426,7 +426,7 @@ BigInt operator^(const BigInt &a, const BigInt &b) {
     return result;
 }
 
-BigInt operator&(const BigInt &a, const BigInt &b) {
+BigInt b_int::operator&(const BigInt &a, const BigInt &b) {
     std::string firstBinStr = a.toBinString();
     std::string secondBinStr = b.toBinString();
     size_t maxLen = std::max(firstBinStr.length(), secondBinStr.length());
@@ -443,7 +443,7 @@ BigInt operator&(const BigInt &a, const BigInt &b) {
     return result;
 }
 
-BigInt operator|(const BigInt &a, const BigInt &b) {
+BigInt b_int::operator|(const BigInt &a, const BigInt &b) {
     std::string firstBinStr = a.toBinString();
     std::string secondBinStr = b.toBinString();
     size_t maxLen = std::max(firstBinStr.length(), secondBinStr.length());
