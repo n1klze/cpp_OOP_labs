@@ -6,11 +6,12 @@
 
 #include "game_field.h"
 
+
 namespace life {
     /*Use to parse universe to game field from file.
      * File header consists of:
      * #N <name of universe>. If not set use filename as default,
-     * #R B{0-8}/S{0-8} game rules. If not set use default life rules B3/S23 as default,
+     * #R B{0-8}/S{0-8} game rules. If not set use life rules B3/S23 as default,
      * #S x y size of field. If not set use 100x100 as default.
      * After is only live cells coordinates.
      */
@@ -29,17 +30,17 @@ namespace life {
         struct HeaderInfo {
             std::string name_of_universe;
             GameRules rules_;
-            size_t width = 100;
-            size_t height = 100;
-            bool name_flag = false;
-            bool rule_flag = false;
+            size_t width = 10;
+            size_t height = 10;
+            bool is_name_set = false;
+            bool is_rules_set = false;
         };
 
         FileParser() = default;
 
         virtual ~FileParser() = default;
 
-        life::GameField ReadUniverseFromFile(const std::string &filename = kDefaultUniverseFilename);
+        life::GameField &ReadUniverseFromFile(const std::string &filename = kDefaultUniverseFilename);
 
     private:
         void GetOption(const std::string &);
@@ -54,8 +55,11 @@ namespace life {
 
         void GetSurvivalRuleValues(const std::string &, size_t &);
 
+        void GetCoordinates(std::ifstream &, std::string &, GameField *);
+
         static const Format kFileFormat;
         static const std::string kDefaultUniverseFilename;
+        static const GameRules kDefaultRules;
         HeaderInfo header_;
     };
 } //namespace life

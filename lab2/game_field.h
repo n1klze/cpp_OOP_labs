@@ -8,20 +8,37 @@
 namespace life {
     class GameField {
     public:
-        GameField() = default;
+        class Cell {
+        public:
+            Cell();
 
-        //GameField(std::string name_of_universe, GameRules rules, );
+            explicit Cell(bool);
 
-        virtual ~GameField() = default;
+            Cell &operator=(const Cell &) = default;
+
+            bool value() { return value_; }
+
+        private:
+            bool value_;
+        };
+
+        GameField();
+
+        GameField(std::string, size_t, size_t);
+
+        virtual ~GameField();
+
+        Cell &operator[](std::pair<int, int>);
+
+        void SetCoordinate(std::pair<int, int>);
 
     private:
         friend class FileParser;
 
         std::string universe_name_;
-        GameRules rules_;
         size_t width_;
         size_t height_;
-        bool *field_;
+        Cell *field_;
     };
 } //namespace life
 
