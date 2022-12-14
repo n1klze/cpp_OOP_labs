@@ -9,9 +9,13 @@
 namespace life {
     class Game {
     public:
+        Game() = default;
+
         Game(command_parser::CommandLineParser::Data);
 
         ~Game() = default;
+
+        void MakeMove();
 
         command_parser::CommandLineParser::Data start_options() const { return start_options_; }
 

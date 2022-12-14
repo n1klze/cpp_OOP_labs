@@ -9,3 +9,7 @@ life::Game::Game(command_parser::CommandLineParser::Data command_line_parameters
     }
     game_rules_ = file_parser.header().rules_;
 }
+
+void life::Game::MakeMove() {
+
+}

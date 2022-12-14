@@ -17,6 +17,8 @@ const life::GameField::Cell &life::GameField::operator[](std::pair<int, int> &co
 }
 
 life::GameField &life::GameField::operator=(const life::GameField &other) {
+    if (std::addressof(other) == this)
+        return *this;
     universe_name_ = other.universe_name_;
     width_ = other.width_;
     height_ = other.height_;
