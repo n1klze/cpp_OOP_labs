@@ -2,27 +2,6 @@
 
 #include <memory>
 
-namespace {
-    void PrintGameRules(std::ostream &output, const life::Game &game_handler) {
-        for (auto i: game_handler.game_rules().birth())
-            output << i;
-        output << life::FileParser::kFileFormat.kRuleSeparator << life::FileParser::kFileFormat.kSurvivalRulePrefix;
-        for (auto i: game_handler.game_rules().survival())
-            output << i;
-    }
-
-    void PrintLiveCellsCoordinatesToFile(std::ofstream &output_file, const life::Game &game_handler) {
-        std::pair<int, int> coordinate;
-        for (int x = 0; x < game_handler.game_field().width(); ++x) {
-            for (int y = 0; y < game_handler.game_field().width(); ++y) {
-                coordinate = {x, y};
-                if (game_handler.game_field()[coordinate].value())
-                    output_file << '\n' << x << ' ' << y;
-            }
-        }
-    }
-}
-
 std::unique_ptr<life::LifeInterface> life::Factory::CreateInterface(life::LifeInterface::GameMode mode,
                                                                     const command_parser::CommandLineParser::Data &start_options) {
     if (mode == LifeInterface::kConsoleGameMode) {
@@ -62,6 +41,27 @@ void life::LifeInterface::StartGame(int argc, char **argv) {
         interface->game_handler_.MakeMove();
     }
     interface->Print();
+}
+
+namespace {
+    void PrintGameRules(std::ostream &output, const life::Game &game_handler) {
+        for (auto i: game_handler.game_rules().birth())
+            output << i;
+        output << life::FileParser::kFileFormat.kRuleSeparator << life::FileParser::kFileFormat.kSurvivalRulePrefix;
+        for (auto i: game_handler.game_rules().survival())
+            output << i;
+    }
+
+    void PrintLiveCellsCoordinatesToFile(std::ofstream &output_file, const life::Game &game_handler) {
+        std::pair<int, int> coordinate;
+        for (int x = 0; x < game_handler.game_field().width(); ++x) {
+            for (int y = 0; y < game_handler.game_field().width(); ++y) {
+                coordinate = {x, y};
+                if (game_handler.game_field()[coordinate].value())
+                    output_file << '\n' << x << ' ' << y;
+            }
+        }
+    }
 }
 
 void life::LifeConsoleInterface::Print() {
