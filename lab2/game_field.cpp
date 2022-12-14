@@ -8,11 +8,25 @@ life::GameField::Cell::Cell(bool value) {
     value_ = value;
 }
 
-life::GameField::Cell &life::GameField::operator[](std::pair<int, int> coordinate) {
+life::GameField::Cell &life::GameField::operator[](std::pair<int, int> &coordinate) {
     return field_[(coordinate.first % width_) * width_ + (coordinate.second % height_)];
 }
 
-life::GameField::GameField() : universe_name_(""), width_(0), height_(0), field_(nullptr) {
+const life::GameField::Cell &life::GameField::operator[](std::pair<int, int> &coordinate) const {
+    return field_[(coordinate.first % width_) * width_ + (coordinate.second % height_)];
+}
+
+life::GameField &life::GameField::operator=(const life::GameField &other) {
+    universe_name_ = other.universe_name_;
+    width_ = other.width_;
+    height_ = other.height_;
+    field_ = new Cell[width_ * height_];
+    for (size_t i = 0; i < width_ * height_; ++i)
+        field_[i] = other.field_[i];
+    return *this;
+}
+
+life::GameField::GameField() : width_(0), height_(0), field_(nullptr) {
     //empty
 }
 
@@ -25,6 +39,6 @@ life::GameField::~GameField() {
     delete[] field_;
 }
 
-void life::GameField::SetCoordinate(std::pair<int, int> coordinate) {
-    this->operator[](coordinate) = Cell(true);
+void life::GameField::SetCoordinate(std::pair<int, int> &coordinate) {
+    (*this)[coordinate] = Cell(true);
 }

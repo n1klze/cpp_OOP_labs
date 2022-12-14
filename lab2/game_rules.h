@@ -20,9 +20,9 @@ namespace life {
 
         GameRules &operator=(const GameRules &) = default;
 
-        std::set<int> birth() { return birth_; }
+        const std::set<int> &birth() const { return birth_; }
 
-        std::set<int> survival() { return survival_; }
+        const std::set<int> &survival() const { return survival_; }
 
     private:
         friend class FileParser;

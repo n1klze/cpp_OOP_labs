@@ -120,7 +120,7 @@ void life::FileParser::GetOption(const std::string &buffer) {
     }
 }
 
-void life::FileParser::GetCoordinates(std::ifstream &input_file, std::string &buffer, GameField *field) {
+void life::FileParser::GetCoordinates(std::ifstream &input_file, std::string &buffer, GameField *game_field) {
     if (!std::isdigit(buffer[0]))
         throw std::invalid_argument("Coordinates not set.");
     std::pair<int, int> current_coordinate;
@@ -138,16 +138,16 @@ void life::FileParser::GetCoordinates(std::ifstream &input_file, std::string &bu
             } catch (const std::invalid_argument &except) {
                 throw std::invalid_argument("Coordinate must be a numeric." + buffer); //TODO: to custom exception
             } catch (const std::out_of_range &except) {
-                throw std::out_of_range("Coordinate" + number + " is too big: " + buffer); //TODO: to custom exception
+                throw std::out_of_range("Coordinate " + number + " is too big: " + buffer); //TODO: to custom exception
             }
             if (pos != number.size())
                 throw std::invalid_argument("Coordinate must be a numeric." + buffer); //TODO: to custom exception
             ++number_of_args;
         }
-        if ((*field)[current_coordinate].value()) {
+        if ((*game_field)[current_coordinate].value()) {
             std::cerr << "Coordinate set twice." + buffer; //TODO:to log
         } else {
-            field->SetCoordinate(current_coordinate);
+            game_field->SetCoordinate(current_coordinate);
         }
     } while (std::getline(input_file, buffer));
 }
@@ -188,16 +188,27 @@ life::GameField &life::FileParser::ReadUniverseFromFile(const std::string &filen
         header_.rules_ = kDefaultRules;
     }
 
-    auto field = new GameField(header_.name_of_universe, header_.width, header_.height);
+    auto game_field = new GameField(header_.name_of_universe, header_.width, header_.height);
 
     try {
-        GetCoordinates(input_file, buffer, field);
+        GetCoordinates(input_file, buffer, game_field);
     } catch (const std::exception &except) {
         input_file.close();
-        delete field;
+        delete game_field;
         std::rethrow_exception(std::current_exception());
     }
 
     input_file.close();
-    return *field;
+
+    std::pair<int, int> coord;
+    for (int y = 0; y < header_.height; ++y) {
+        for (int x = 0; x < header_.width; ++x) {
+            coord = {x, y};
+            if (x == 0)
+                std::cout << '\n';
+            std::cout << (*game_field)[coord].value() << " ";
+        }
+    }
+
+    return *game_field;
 }

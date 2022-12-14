@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "game_field.h"
+#include "game.h"
 
 
 namespace life {
@@ -40,7 +41,11 @@ namespace life {
 
         virtual ~FileParser() = default;
 
+        static const Format kFileFormat;
+
         life::GameField &ReadUniverseFromFile(const std::string &filename = kDefaultUniverseFilename);
+
+        const HeaderInfo &header() const { return header_; }
 
     private:
         void GetOption(const std::string &);
@@ -55,9 +60,8 @@ namespace life {
 
         void GetSurvivalRuleValues(const std::string &, size_t &);
 
-        void GetCoordinates(std::ifstream &, std::string &, GameField *);
+        static void GetCoordinates(std::ifstream &, std::string &, GameField *);
 
-        static const Format kFileFormat;
         static const std::string kDefaultUniverseFilename;
         static const GameRules kDefaultRules;
         HeaderInfo header_;
