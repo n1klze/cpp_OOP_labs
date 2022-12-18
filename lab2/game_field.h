@@ -17,6 +17,8 @@ namespace life {
 
             Cell &operator=(const Cell &) = default;
 
+            bool IsAlive() const { return value(); }
+
             bool value() const { return value_; }
 
         private:
@@ -29,9 +31,9 @@ namespace life {
 
         virtual ~GameField();
 
-        Cell &operator[](std::pair<int, int> &);
+        Cell &operator[](const std::pair<int, int> &);
 
-        const Cell &operator[](std::pair<int, int> &) const;
+        const Cell &operator[](const std::pair<int, int> &) const;
 
         GameField &operator=(const GameField &);
 

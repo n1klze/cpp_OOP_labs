@@ -9,6 +9,8 @@ namespace command_parser {
     class CommandLineParser {
     public:
         struct Data {
+            Data() : iterations(0) {}
+
             int iterations;
             std::string in_filename;
             std::string out_filename;

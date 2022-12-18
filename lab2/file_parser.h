@@ -43,7 +43,7 @@ namespace life {
 
         static const Format kFileFormat;
 
-        life::GameField &ReadUniverseFromFile(const std::string &filename = kDefaultUniverseFilename);
+        life::GameField ReadUniverseFromFile(const std::string &filename = kDefaultUniverseFilename);
 
         const HeaderInfo &header() const { return header_; }
 
@@ -60,7 +60,7 @@ namespace life {
 
         void GetSurvivalRuleValues(const std::string &, size_t &);
 
-        static void GetCoordinates(std::ifstream &, std::string &, GameField *);
+        static void GetCoordinates(std::ifstream &, std::string &, GameField &);
 
         static const std::string kDefaultUniverseFilename;
         static const GameRules kDefaultRules;

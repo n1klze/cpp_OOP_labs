@@ -8,12 +8,14 @@ life::GameField::Cell::Cell(bool value) {
     value_ = value;
 }
 
-life::GameField::Cell &life::GameField::operator[](std::pair<int, int> &coordinate) {
-    return field_[(coordinate.first % width_) * width_ + (coordinate.second % height_)];
+life::GameField::Cell &life::GameField::operator[](const std::pair<int, int> &coordinate) {
+    return field_[(((coordinate.first > 0) ? coordinate.first : width_ + coordinate.first) % width_) * width_ +
+                  (((coordinate.second > 0) ? coordinate.second : height_ + coordinate.second) % height_)];
 }
 
-const life::GameField::Cell &life::GameField::operator[](std::pair<int, int> &coordinate) const {
-    return field_[(coordinate.first % width_) * width_ + (coordinate.second % height_)];
+const life::GameField::Cell &life::GameField::operator[](const std::pair<int, int> &coordinate) const {
+    return field_[(((coordinate.first > 0) ? coordinate.first : width_ + coordinate.first) % width_) * width_ +
+                  (((coordinate.second > 0) ? coordinate.second : height_ + coordinate.second) % height_)];
 }
 
 life::GameField &life::GameField::operator=(const life::GameField &other) {

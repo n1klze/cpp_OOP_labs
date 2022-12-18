@@ -120,7 +120,7 @@ void life::FileParser::GetOption(const std::string &buffer) {
     }
 }
 
-void life::FileParser::GetCoordinates(std::ifstream &input_file, std::string &buffer, GameField *game_field) {
+void life::FileParser::GetCoordinates(std::ifstream &input_file, std::string &buffer, GameField &game_field) {
     if (!std::isdigit(buffer[0]))
         throw std::invalid_argument("Coordinates not set.");
     std::pair<int, int> current_coordinate;
@@ -144,15 +144,15 @@ void life::FileParser::GetCoordinates(std::ifstream &input_file, std::string &bu
                 throw std::invalid_argument("Coordinate must be a numeric." + buffer); //TODO: to custom exception
             ++number_of_args;
         }
-        if ((*game_field)[current_coordinate].value()) {
+        if (game_field[current_coordinate].value()) {
             std::cerr << "Coordinate set twice." + buffer; //TODO:to log
         } else {
-            game_field->SetCoordinate(current_coordinate);
+            game_field.SetCoordinate(current_coordinate);
         }
     } while (std::getline(input_file, buffer));
 }
 
-life::GameField &life::FileParser::ReadUniverseFromFile(const std::string &filename) {
+life::GameField life::FileParser::ReadUniverseFromFile(const std::string &filename) {
     std::ifstream input_file(filename);
     input_file.is_open() ?: throw std::invalid_argument("Unable to open input file.");
 
@@ -188,27 +188,15 @@ life::GameField &life::FileParser::ReadUniverseFromFile(const std::string &filen
         header_.rules_ = kDefaultRules;
     }
 
-    auto game_field = new GameField(header_.name_of_universe, header_.width, header_.height);
+    GameField game_field(header_.name_of_universe, header_.width, header_.height);
 
     try {
         GetCoordinates(input_file, buffer, game_field);
     } catch (const std::exception &except) {
         input_file.close();
-        delete game_field;
         std::rethrow_exception(std::current_exception());
     }
 
     input_file.close();
-
-    std::pair<int, int> coord;
-    for (int y = 0; y < header_.height; ++y) {
-        for (int x = 0; x < header_.width; ++x) {
-            coord = {x, y};
-            if (x == 0)
-                std::cout << '\n';
-            std::cout << (*game_field)[coord].value() << " ";
-        }
-    }
-
-    return *game_field;
+    return game_field;
 }

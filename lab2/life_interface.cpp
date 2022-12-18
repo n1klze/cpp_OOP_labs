@@ -2,8 +2,8 @@
 
 #include <memory>
 
-std::unique_ptr<life::LifeInterface> life::Factory::CreateInterface(life::LifeInterface::GameMode mode,
-                                                                    const command_parser::CommandLineParser::Data &start_options) {
+std::unique_ptr<life::LifeInterface> life::Factory::CreateInterface(
+        life::LifeInterface::GameMode mode, const command_parser::CommandLineParser::Data &start_options) {
     if (mode == LifeInterface::kConsoleGameMode) {
         return std::make_unique<LifeConsoleInterface>(start_options);
     } else if (mode == LifeInterface::kOfflineGameMode) {
@@ -14,13 +14,11 @@ std::unique_ptr<life::LifeInterface> life::Factory::CreateInterface(life::LifeIn
 }
 
 life::LifeConsoleInterface::LifeConsoleInterface(const command_parser::CommandLineParser::Data &start_options) {
-    //empty
-    set_game_handler(Game(start_options));
+    game_handler_ = Game(start_options);
 }
 
 life::LifeOfflineInterface::LifeOfflineInterface(const command_parser::CommandLineParser::Data &start_options) {
-    //empty
-    set_game_handler(Game(start_options));
+    game_handler_ = Game(start_options);
 }
 
 void life::LifeInterface::StartGame(int argc, char **argv) {
@@ -36,11 +34,21 @@ void life::LifeInterface::StartGame(int argc, char **argv) {
         interface = factory.CreateInterface(kOfflineGameMode, command_parser.data());
     }
 
-    std::cout << interface->game_handler_.start_options().iterations;
-    for (size_t i = 0; i < interface->game_handler_.start_options().iterations; ++i) {
-        interface->game_handler_.MakeMove();
+    interface->SimulateGameplay();
+}
+
+void life::LifeConsoleInterface::SimulateGameplay() {
+    for (size_t i = 0; i < game_handler_.start_options().iterations; ++i) {
+        game_handler_.MakeMove();
     }
-    interface->Print();
+    Print();
+}
+
+void life::LifeOfflineInterface::SimulateGameplay() {
+    for (size_t i = 0; i < game_handler_.start_options().iterations; ++i) {
+        game_handler_.MakeMove();
+    }
+    Print();
 }
 
 namespace {
@@ -57,7 +65,7 @@ namespace {
         for (int x = 0; x < game_handler.game_field().width(); ++x) {
             for (int y = 0; y < game_handler.game_field().width(); ++y) {
                 coordinate = {x, y};
-                if (game_handler.game_field()[coordinate].value())
+                if (game_handler.game_field()[coordinate].IsAlive())
                     output_file << '\n' << x << ' ' << y;
             }
         }
@@ -65,44 +73,46 @@ namespace {
 }
 
 void life::LifeConsoleInterface::Print() {
-    std::cout << game_handler().game_field().universe_name() << '\n';
+    std::cout << game_handler_.game_field().universe_name() << '\n';
 
-    PrintGameRules(std::cout, game_handler());
+    PrintGameRules(std::cout, game_handler_);
+
+    std::cout << '\n' << game_handler_.number_of_iterations();
 
     std::pair<int, int> coordinate;
-    for (int y = 0; y < game_handler().game_field().height(); ++y) {
-        for (int x = 0; x < game_handler().game_field().width(); ++x) {
+    for (int y = 0; y < game_handler_.game_field().height(); ++y) {
+        for (int x = 0; x < game_handler_.game_field().width(); ++x) {
             coordinate = {x, y};
             if (x == 0)
                 std::cout << '\n';
-            std::cout << (game_handler().game_field()[coordinate].value() ? '#' : ' ');
+            std::cout << (game_handler_.game_field()[coordinate].value() ? '#' : ' ');
         }
     }
 }
 
 void life::LifeOfflineInterface::Print() {
-    std::ofstream output_file(game_handler().start_options().out_filename);
+    std::ofstream output_file(game_handler_.start_options().out_filename);
     output_file.is_open() ?: throw std::invalid_argument("Unable to open output file.");
     output_file << life::FileParser::kFileFormat.kGameVersion << '\n';
 
     output_file << life::FileParser::kFileFormat.kNameOfUniverseIdentifier << ' '
-                << game_handler().game_field().universe_name() << '\n';
+                << game_handler_.game_field().universe_name() << '\n';
 
     output_file << life::FileParser::kFileFormat.kGameRulesIdentifier << ' '
                 << life::FileParser::kFileFormat.kBirthRulePrefix;
-    PrintGameRules(output_file, game_handler());
+    PrintGameRules(output_file, game_handler_);
 
     std::pair<int, int> coordinate;
-    for (int y = 0; y < game_handler().game_field().height(); ++y) {
-        for (int x = 0; x < game_handler().game_field().width(); ++x) {
+    for (int y = 0; y < game_handler_.game_field().height(); ++y) {
+        for (int x = 0; x < game_handler_.game_field().width(); ++x) {
             coordinate = {x, y};
             if (x == 0)
                 std::cout << '\n';
-            std::cout << (game_handler().game_field()[coordinate].value() ? '#' : ' ');
+            std::cout << (game_handler_.game_field()[coordinate].value()/* ? '#' : ' '*/);
         }
     }
 
-    PrintLiveCellsCoordinatesToFile(output_file, game_handler());
+    PrintLiveCellsCoordinatesToFile(output_file, game_handler_);
 
     output_file.close();
 }

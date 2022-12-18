@@ -23,7 +23,12 @@ namespace life {
 
         const GameField &game_field() const { return game_field_; }
 
+        size_t number_of_iterations() const { return number_of_iterations_; }
+
     private:
+        int CountNumberOfNeighbours(const std::pair<int, int> &coordinate);
+
+        size_t number_of_iterations_ = 0;
         command_parser::CommandLineParser::Data start_options_;
         GameRules game_rules_;
         GameField game_field_;
