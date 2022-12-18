@@ -1,5 +1,6 @@
-#include "factory.h"
 #include "life_interface.h"
+
+#include "factory.h"
 
 life::LifeConsoleInterface::LifeConsoleInterface(const command_parser::CommandLineParser::Data &start_options) {
     game_handler_ = Game(start_options);
