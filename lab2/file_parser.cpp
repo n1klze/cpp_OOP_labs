@@ -1,4 +1,3 @@
-#include <sstream>
 #include "file_parser.h"
 
 namespace {
