@@ -27,26 +27,6 @@ namespace life {
 
         Game game_handler_;
     };
-
-    class LifeConsoleInterface : public LifeInterface {
-    public:
-        explicit LifeConsoleInterface(const command_parser::CommandLineParser::Data &);
-
-        void Print() override;
-
-    private:
-        void SimulateGameplay() override;
-    };
-
-    class LifeOfflineInterface : public LifeInterface {
-    public:
-        explicit LifeOfflineInterface(const command_parser::CommandLineParser::Data &);
-
-        void Print() override;
-
-    private:
-        void SimulateGameplay() override;
-    };
 } //namespace life
 
 #endif //LAB2_LIFE_INTERFACE_H

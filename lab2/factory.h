@@ -3,7 +3,8 @@
 
 #include <memory>
 
-#include "life_interface.h"
+#include "life_console_interface.h"
+#include "life_offline_interface.h"
 
 namespace life {
     class Factory {
@@ -11,6 +12,6 @@ namespace life {
         std::unique_ptr<LifeInterface> FactoryMethod(LifeInterface::GameMode,
                                                      const command_parser::CommandLineParser::Data &);
     };
-}
+} //namespace life
 
 #endif //LAB2_FACTORY_H
