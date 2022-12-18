@@ -2,7 +2,6 @@
 #define LAB2_LIFE_INTERFACE_H
 
 #include <algorithm>
-#include <memory>
 
 #include "command_line_parser.h"
 #include "game.h"
@@ -20,10 +19,6 @@ namespace life {
         static void StartGame(int, char **);
 
         virtual void Print() = 0;
-
-        /*const Game &game_handler() const { return game_handler_; }
-
-        void set_game_handler(const Game &data) { game_handler_ = data; }*/
 
     protected:
         LifeInterface() = default;
@@ -51,12 +46,6 @@ namespace life {
 
     private:
         void SimulateGameplay() override;
-    };
-
-    class Factory {
-    public:
-        std::unique_ptr<LifeInterface> CreateInterface(LifeInterface::GameMode,
-                                                       const command_parser::CommandLineParser::Data &);
     };
 } //namespace life
 

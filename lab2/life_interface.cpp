@@ -1,17 +1,5 @@
+#include "factory.h"
 #include "life_interface.h"
-
-#include <memory>
-
-std::unique_ptr<life::LifeInterface> life::Factory::CreateInterface(
-        life::LifeInterface::GameMode mode, const command_parser::CommandLineParser::Data &start_options) {
-    if (mode == LifeInterface::kConsoleGameMode) {
-        return std::make_unique<LifeConsoleInterface>(start_options);
-    } else if (mode == LifeInterface::kOfflineGameMode) {
-        return std::make_unique<LifeOfflineInterface>(start_options);
-    } else {
-        throw std::invalid_argument("Unknown game mode.");
-    }
-}
 
 life::LifeConsoleInterface::LifeConsoleInterface(const command_parser::CommandLineParser::Data &start_options) {
     game_handler_ = Game(start_options);
@@ -29,9 +17,9 @@ void life::LifeInterface::StartGame(int argc, char **argv) {
     std::unique_ptr<LifeInterface> interface;
 
     if (command_parser.data().out_filename.empty()) {
-        interface = factory.CreateInterface(kConsoleGameMode, command_parser.data());
+        interface = factory.FactoryMethod(kConsoleGameMode, command_parser.data());
     } else {
-        interface = factory.CreateInterface(kOfflineGameMode, command_parser.data());
+        interface = factory.FactoryMethod(kOfflineGameMode, command_parser.data());
     }
 
     interface->SimulateGameplay();
@@ -53,6 +41,7 @@ void life::LifeOfflineInterface::SimulateGameplay() {
 
 namespace {
     void PrintGameRules(std::ostream &output, const life::Game &game_handler) {
+        output << life::FileParser::kFileFormat.kBirthRulePrefix;
         for (auto i: game_handler.game_rules().birth())
             output << i;
         output << life::FileParser::kFileFormat.kRuleSeparator << life::FileParser::kFileFormat.kSurvivalRulePrefix;
@@ -98,19 +87,8 @@ void life::LifeOfflineInterface::Print() {
     output_file << life::FileParser::kFileFormat.kNameOfUniverseIdentifier << ' '
                 << game_handler_.game_field().universe_name() << '\n';
 
-    output_file << life::FileParser::kFileFormat.kGameRulesIdentifier << ' '
-                << life::FileParser::kFileFormat.kBirthRulePrefix;
+    output_file << life::FileParser::kFileFormat.kGameRulesIdentifier << ' ';
     PrintGameRules(output_file, game_handler_);
-
-    std::pair<int, int> coordinate;
-    for (int y = 0; y < game_handler_.game_field().height(); ++y) {
-        for (int x = 0; x < game_handler_.game_field().width(); ++x) {
-            coordinate = {x, y};
-            if (x == 0)
-                std::cout << '\n';
-            std::cout << (game_handler_.game_field()[coordinate].value()/* ? '#' : ' '*/);
-        }
-    }
 
     PrintLiveCellsCoordinatesToFile(output_file, game_handler_);
 
