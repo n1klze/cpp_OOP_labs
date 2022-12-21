@@ -103,7 +103,7 @@ void life::FileParser::GetWidthAndHeight(const std::string &buffer) {
     std::istringstream ss(buffer);
     ss >> header_.width;
     ss >> header_.height;
-    if (ss) throw FileFormatException("Too many numbers of resolution parameters: " + buffer);
+    if (!ss.eof()) throw FileFormatException("Too many numbers of resolution parameters: " + buffer);
 }
 
 void life::FileParser::GetSizeOfField(const std::string &buffer) {

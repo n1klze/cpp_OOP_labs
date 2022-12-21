@@ -20,12 +20,13 @@ namespace {
     }
 
     void PrintGameRules(std::ostream &output, const life::Game &game_handler) {
-        output << life::FileParser::kFileFormat.kBirthRulePrefix;
+        output << "\nGame rules: " << life::FileParser::kFileFormat.kBirthRulePrefix;
         for (auto i: game_handler.game_rules().birth())
             output << i;
         output << life::FileParser::kFileFormat.kRuleSeparator << life::FileParser::kFileFormat.kSurvivalRulePrefix;
         for (auto i: game_handler.game_rules().survival())
             output << i;
+        output << '\n';
     }
 
     void PrintLiveCellsCoordinatesToFile(std::ofstream &output_file, const life::Game &game_handler) {
@@ -106,19 +107,38 @@ void life::LifeConsoleInterface::SimulateGameplay() {
 }
 
 void life::LifeConsoleInterface::Print() {
-    std::cout << game_handler_.game_field().universe_name() << '\n';
+    for (size_t i = 0; i < game_handler_.game_field().width(); ++i)
+        std::cout << "═";
+    std::cout << "\nName of universe: " << game_handler_.game_field().universe_name() << '\n';
+
+    for (size_t i = 0; i < game_handler_.game_field().width(); ++i)
+        std::cout << "═";
 
     PrintGameRules(std::cout, game_handler_);
 
-    std::cout << '\n' << game_handler_.number_of_iterations();
+    for (size_t i = 0; i < game_handler_.game_field().width(); ++i)
+        std::cout << "═";
 
+    std::cout << "\nNumber of iterations: " << game_handler_.number_of_iterations() << '\n';
+
+    for (size_t i = 0; i < game_handler_.game_field().width(); ++i)
+        std::cout << "═";
+
+    std::cout << "\n╔";
+    for (size_t i = 0; i < game_handler_.game_field().width(); ++i)
+        std::cout << "═";
+    std::cout << "╗\n║";
     std::pair<int, int> coordinate;
     for (int y = 0; y < game_handler_.game_field().height(); ++y) {
         for (int x = 0; x < game_handler_.game_field().width(); ++x) {
             coordinate = {x, y};
-            if (x == 0)
-                std::cout << '\n';
+            if (x == 0 && y != 0)
+                std::cout << "║\n║";
             std::cout << (game_handler_.game_field()[coordinate].value() ? '#' : ' ');
         }
     }
+    std::cout << "║\n╚";
+    for (size_t i = 0; i < game_handler_.game_field().width(); ++i)
+        std::cout << "═";
+    std::cout << "╝\n";
 }
