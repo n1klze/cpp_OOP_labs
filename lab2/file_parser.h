@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "file_format_exception.h"
 #include "game_field.h"
 #include "game.h"
 
@@ -32,8 +33,8 @@ namespace life {
         struct HeaderInfo {
             std::string name_of_universe;
             GameRules rules_;
-            size_t width = 10;
-            size_t height = 10;
+            size_t width = 30;
+            size_t height = 30;
             bool is_name_set = false;
             bool is_rules_set = false;
         };
