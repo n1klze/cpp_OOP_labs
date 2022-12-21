@@ -99,6 +99,27 @@ void life::FileParser::GetGameRules(const std::string &buffer) {
     }
 }
 
+void life::FileParser::GetWidthAndHeight(const std::string &buffer) {
+    std::istringstream ss(buffer);
+    ss >> header_.width;
+    ss >> header_.height;
+    if (ss) throw FileFormatException("Too many numbers of resolution parameters: " + buffer);
+}
+
+void life::FileParser::GetSizeOfField(const std::string &buffer) {
+    if (std::isspace(buffer[kFileFormat.kSizeOfFieldIdentifier.size()])) {
+        GetWidthAndHeight(buffer.substr(kFileFormat.kNameOfUniverseIdentifier.size() + 1));
+    } else {
+        GetWidthAndHeight(buffer.substr(kFileFormat.kNameOfUniverseIdentifier.size()));
+        std::cerr << "No space after " + kFileFormat.kSizeOfFieldIdentifier + ':' + buffer << "\n";
+    }
+    if (!header_.is_size_set) {
+        header_.is_size_set = true;
+    } else {
+        throw FileFormatException("Following definition of the size of field: " + buffer);
+    }
+}
+
 void life::FileParser::GetOption(const std::string &buffer) {
     if (buffer.substr(0, kFileFormat.kNameOfUniverseIdentifier.size()) ==
         kFileFormat.kNameOfUniverseIdentifier) {
@@ -106,6 +127,9 @@ void life::FileParser::GetOption(const std::string &buffer) {
     } else if (buffer.substr(0, kFileFormat.kNameOfUniverseIdentifier.size()) ==
                kFileFormat.kGameRulesIdentifier) {
         GetGameRules(buffer);
+    } else if (buffer.substr(0, kFileFormat.kSizeOfFieldIdentifier.size()) ==
+               kFileFormat.kSizeOfFieldIdentifier) {
+        GetSizeOfField(buffer);
     } else {
         throw FileFormatException("Unknown option " + buffer);
     }
@@ -113,7 +137,7 @@ void life::FileParser::GetOption(const std::string &buffer) {
 
 void life::FileParser::GetCoordinates(std::ifstream &input_file, std::string &buffer, GameField &game_field) {
     if (!std::isdigit(buffer[0]))
-        throw std::invalid_argument("Coordinates not set.");
+        throw FileFormatException("Coordinates not set.");
     std::pair<int, int> current_coordinate;
     do {
         std::istringstream ss(buffer);
@@ -166,7 +190,7 @@ life::GameField life::FileParser::ReadUniverseFromFile(const std::string &filena
             }
         } catch (const std::exception &except) {
             input_file.close();
-            throw except;
+            std::rethrow_exception(std::current_exception());
         }
     }
 

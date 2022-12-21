@@ -25,6 +25,7 @@ namespace life {
             const std::string kGameVersion              = "#Life 1.06";
             const std::string kNameOfUniverseIdentifier = "#N";
             const std::string kGameRulesIdentifier      = "#R";
+            const std::string kSizeOfFieldIdentifier    = "#S";
             const std::string kBirthRulePrefix          = "B";
             const std::string kSurvivalRulePrefix       = "S";
             const std::string kRuleSeparator            = "/";
@@ -33,10 +34,11 @@ namespace life {
         struct HeaderInfo {
             std::string name_of_universe;
             GameRules rules_;
-            size_t width = 30;
-            size_t height = 30;
+            size_t width = 10;
+            size_t height = 10;
             bool is_name_set = false;
             bool is_rules_set = false;
+            bool is_size_set = false;
         };
 
         FileParser() = default;
@@ -61,6 +63,10 @@ namespace life {
         void GetBirthRuleValues(const std::string &, size_t &);
 
         void GetSurvivalRuleValues(const std::string &, size_t &);
+
+        void GetSizeOfField(const std::string &);
+
+        void GetWidthAndHeight(const std::string &);
 
         static void GetCoordinates(std::ifstream &, std::string &, GameField &);
 
