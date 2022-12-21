@@ -134,7 +134,7 @@ void life::LifeConsoleInterface::Print() {
             coordinate = {x, y};
             if (x == 0 && y != 0)
                 std::cout << "║\n║";
-            std::cout << (game_handler_.game_field()[coordinate].value() ? '#' : ' ');
+            std::cout << (game_handler_.game_field()[coordinate].value() ? "█" : " ");
         }
     }
     std::cout << "║\n╚";
