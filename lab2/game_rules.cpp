@@ -1,7 +1,7 @@
 #include "game_rules.h"
 
 namespace {
-    const std::set<int> kDefaultBirthRule{2};
+    const std::set<int> kDefaultBirthRule{3};
     const std::set<int> kDefaultSurvivalRule{2, 3};
 }
 

@@ -9,13 +9,12 @@
 #include "game_field.h"
 #include "game.h"
 
-
 namespace life {
     /*Use to parse universe to game field from file.
      * File header consists of:
      * #N <name of universe>. If not set use filename as default,
      * #R B{0-8}/S{0-8} game rules. If not set use life rules B3/S23 as default,
-     * #S x y size of field. If not set use 100x100 as default.
+     * #S x y size of field. If not set use 32x32 as default.
      * After is only live cells coordinates.
      */
     class FileParser {
@@ -34,8 +33,8 @@ namespace life {
         struct HeaderInfo {
             std::string name_of_universe;
             GameRules rules_;
-            size_t width = 10;
-            size_t height = 10;
+            size_t width = 32;
+            size_t height = 32;
             bool is_name_set = false;
             bool is_rules_set = false;
             bool is_size_set = false;

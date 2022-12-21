@@ -1,5 +1,3 @@
-#include "command_line_parser.h"
-#include "file_parser.h"
 #include "life_interface.h"
 
 int main(int argc, char **argv) {
