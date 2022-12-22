@@ -5,7 +5,7 @@ namespace {
 }
 
 const life::FileParser::Format life::FileParser::kFileFormat{};
-const std::string life::FileParser::kDefaultUniverseFilename = "default.life";
+const std::string life::FileParser::kDefaultUniverseFilename = "../examples/default.life";
 const life::GameRules life::FileParser::kDefaultRules(GameRules::NotableLifeLikeRules::kDefaultLifeRules);
 
 void life::FileParser::GetNameOfUniverse(const std::string &buffer) {
