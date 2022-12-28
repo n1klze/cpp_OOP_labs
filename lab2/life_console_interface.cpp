@@ -87,8 +87,13 @@ void life::LifeConsoleInterface::SimulateGameplay() {
             if (args.size() > 1) {
                 try {
                     number_of_iterations = std::stoi(args[1]);
+                    if (number_of_iterations < 0) throw std::domain_error("Number of iterations must be positive");
+                } catch (const std::domain_error &except) {
+                    std::cerr << except.what() << std::endl;
+                    continue;
                 } catch (const std::exception &except) {
                     std::cerr << "Bad number of iterations. Try again." << std::endl;
+                    continue;
                 }
             }
             if (args.size() > 2)
@@ -97,9 +102,15 @@ void life::LifeConsoleInterface::SimulateGameplay() {
                 game_handler_.MakeMove();
             Print();
         } else if (args[0] == supportive_commands::kExitCommand) {
-            break;
+            if (args.size() == 1)
+                break;
+            std::cerr << "Too much arguments. Try again\n";
         } else if (args[0] == supportive_commands::kHelpCommand) {
-            PrintUsage();
+            if (args.size() == 1) {
+                PrintUsage();
+            } else {
+                (std::cerr << "Too much arguments. Try again\n");
+            }
         } else {
             std::cout << "Unsupported command. Try again.";
         }
