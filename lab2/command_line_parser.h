@@ -8,21 +8,40 @@
 namespace command_parser {
     class CommandLineParser {
     public:
-        struct Data {
-            Data() : iterations(0) {}
+        class ParsedCmdParameters {
+        public:
+            ParsedCmdParameters() : iterations_(0) {}
 
-            int iterations;
-            std::string in_filename;
-            std::string out_filename;
+            int iterations() const { return iterations_; }
+
+            const std::string &in_filename() const { return in_filename_; }
+
+            const std::string &out_filename() const { return out_filename_; }
+
+            void iterations(int number_of_iterations) { iterations_ = number_of_iterations; }
+
+            void in_filename(const std::string &in_filename) { in_filename_ = in_filename; }
+
+        private:
+            friend class CommandLineParser;
+            int iterations_;
+            std::string in_filename_;
+            std::string out_filename_;
         };
 
         void GetCommandLineOptions(int argc, char **argv);
 
-        Data data() const { return data_; }
+        ParsedCmdParameters data() const { return data_; }
 
     private:
+        void ParseShortCommand(char **, const std::string &, int &);
+
+        void GetNumberOfIterations(char **, int &);
+
+        void GetInputFilename(const std::string &);
+
         static const std::string kUsageMessage;
-        Data data_;
+        ParsedCmdParameters data_;
     };
 } //namespace command_parser
 

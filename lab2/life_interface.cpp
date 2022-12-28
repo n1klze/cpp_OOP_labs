@@ -9,7 +9,7 @@ void life::LifeInterface::StartGame(int argc, char **argv) {
     Factory factory;
     std::unique_ptr<LifeInterface> interface;
 
-    if (command_parser.data().out_filename.empty()) {
+    if (command_parser.data().out_filename().empty()) {
         interface = factory.FactoryMethod(kConsoleGameMode, command_parser.data());
     } else {
         interface = factory.FactoryMethod(kOfflineGameMode, command_parser.data());

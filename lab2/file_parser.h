@@ -9,6 +9,17 @@
 #include "game_field.h"
 #include "game.h"
 
+namespace file_format {
+    const char kOptionSymbol                    = '#';
+    const std::string kGameVersion              = "#Life 1.06";
+    const std::string kNameOfUniverseIdentifier = "#N";
+    const std::string kGameRulesIdentifier      = "#R";
+    const std::string kSizeOfFieldIdentifier    = "#S";
+    const std::string kBirthRulePrefix          = "B";
+    const std::string kSurvivalRulePrefix       = "S";
+    const std::string kRuleSeparator            = "/";
+}
+
 namespace life {
     /*Use to parse universe to game field from file.
      * File header consists of:
@@ -19,32 +30,25 @@ namespace life {
      */
     class FileParser {
     public:
-        struct Format {
-            const char kOptionSymbol                    = '#';
-            const std::string kGameVersion              = "#Life 1.06";
-            const std::string kNameOfUniverseIdentifier = "#N";
-            const std::string kGameRulesIdentifier      = "#R";
-            const std::string kSizeOfFieldIdentifier    = "#S";
-            const std::string kBirthRulePrefix          = "B";
-            const std::string kSurvivalRulePrefix       = "S";
-            const std::string kRuleSeparator            = "/";
-        };
+        class HeaderInfo {
+        public:
+            const GameRules &rules() const { return rules_; }
 
-        struct HeaderInfo {
-            std::string name_of_universe;
+        private:
+            friend class FileParser;
+
+            std::string name_of_universe_;
             GameRules rules_;
-            size_t width = 32;
-            size_t height = 32;
-            bool is_name_set = false;
-            bool is_rules_set = false;
-            bool is_size_set = false;
+            size_t width_ = 32;
+            size_t height_ = 32;
+            bool is_name_set_ = false;
+            bool is_rules_set_ = false;
+            bool is_size_set_ = false;
         };
 
         FileParser() = default;
 
         virtual ~FileParser() = default;
-
-        static const Format kFileFormat;
 
         life::GameField ReadUniverseFromFile(const std::string &filename = kDefaultUniverseFilename);
 

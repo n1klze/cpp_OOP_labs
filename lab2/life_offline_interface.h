@@ -6,7 +6,7 @@
 namespace life {
     class LifeOfflineInterface : public LifeInterface {
     public:
-        explicit LifeOfflineInterface(const command_parser::CommandLineParser::Data &);
+        explicit LifeOfflineInterface(const command_parser::CommandLineParser::ParsedCmdParameters &);
 
         void Print() override;
 

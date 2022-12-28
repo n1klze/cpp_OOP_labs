@@ -17,17 +17,17 @@ public:
 };
 
 TEST_F(GameMechanicsTest, init_test) {
-    command_parser::CommandLineParser::Data init_data;
-    init_data.in_filename = test_input_filename;
+    command_parser::CommandLineParser::ParsedCmdParameters init_data;
+    init_data.in_filename(test_input_filename);
     life::Game game_handler(init_data);
     for (auto i: live_cells_coordinates)
         EXPECT_TRUE(game_handler.game_field()[i].IsAlive());
 }
 
 TEST_F(GameMechanicsTest, gameplay_test) {
-    command_parser::CommandLineParser::Data init_data;
-    init_data.in_filename = test_input_filename;
-    init_data.iterations = 1;
+    command_parser::CommandLineParser::ParsedCmdParameters init_data;
+    init_data.in_filename(test_input_filename);
+    init_data.iterations(1);
     life::Game game_handler(init_data);
     game_handler.MakeMove();
     for (auto i: coordinates_after_iteration)
@@ -35,11 +35,11 @@ TEST_F(GameMechanicsTest, gameplay_test) {
 }
 
 TEST_F(GameMechanicsTest, output_test) {
-    command_parser::CommandLineParser::Data init_data;
-    init_data.in_filename = test_input_filename;
-    init_data.iterations = 100;
+    command_parser::CommandLineParser::ParsedCmdParameters init_data;
+    init_data.in_filename(test_input_filename);
+    init_data.iterations(100);
     life::Game game_handler(init_data);
-    for (int i = 0; i < game_handler.start_options().iterations; ++i)
+    for (int i = 0; i < game_handler.start_options().iterations(); ++i)
         game_handler.MakeMove();
 
     life::FileParser file_parser;

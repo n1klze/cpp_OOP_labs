@@ -6,22 +6,20 @@
 
 #include "life_interface.h"
 
+namespace supportive_commands {
+    const std::string kDumpCommand      = "dump";
+    const std::string kTickCommand      = "tick";
+    const std::string kShortTickCommand = "t";
+    const std::string kExitCommand      = "exit";
+    const std::string kHelpCommand      = "help";
+}
+
 namespace life {
     class LifeConsoleInterface : public LifeInterface {
     public:
-        struct SupportiveCommands {
-            const std::string kDumpCommand      = "dump";
-            const std::string kTickCommand      = "tick";
-            const std::string kShortTickCommand = "t";
-            const std::string kExitCommand      = "exit";
-            const std::string kHelpCommand      = "help";
-        };
-
-        explicit LifeConsoleInterface(const command_parser::CommandLineParser::Data &);
+        explicit LifeConsoleInterface(const command_parser::CommandLineParser::ParsedCmdParameters &);
 
         void Print() override;
-
-        static const SupportiveCommands kSupportiveCommands;
 
     private:
         void SimulateGameplay() override;

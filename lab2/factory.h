@@ -10,7 +10,7 @@ namespace life {
     class Factory {
     public:
         std::unique_ptr<LifeInterface> FactoryMethod(LifeInterface::GameMode,
-                                                     const command_parser::CommandLineParser::Data &);
+                                                     const command_parser::CommandLineParser::ParsedCmdParameters &);
     };
 } //namespace life
 

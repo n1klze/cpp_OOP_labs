@@ -4,19 +4,18 @@ namespace {
     const char kRuleProhibitedValue = '9';
 }
 
-const life::FileParser::Format life::FileParser::kFileFormat{};
 const std::string life::FileParser::kDefaultUniverseFilename = "../examples/default.life";
 const life::GameRules life::FileParser::kDefaultRules(GameRules::NotableLifeLikeRules::kDefaultLifeRules);
 
 void life::FileParser::GetNameOfUniverse(const std::string &buffer) {
-    if (std::isspace(buffer[kFileFormat.kNameOfUniverseIdentifier.size()])) {
-        header_.name_of_universe = buffer.substr(kFileFormat.kNameOfUniverseIdentifier.size() + 1);
+    if (std::isspace(buffer[file_format::kNameOfUniverseIdentifier.size()])) {
+        header_.name_of_universe_ = buffer.substr(file_format::kNameOfUniverseIdentifier.size() + 1);
     } else {
-        header_.name_of_universe = buffer.substr(kFileFormat.kNameOfUniverseIdentifier.size());
-        std::cerr << "No space after " + kFileFormat.kNameOfUniverseIdentifier + ':' + buffer << "\n";
+        header_.name_of_universe_ = buffer.substr(file_format::kNameOfUniverseIdentifier.size());
+        std::cerr << "No space after " + file_format::kNameOfUniverseIdentifier + ':' + buffer << "\n";
     }
-    if (!header_.is_name_set) {
-        header_.is_name_set = true;
+    if (!header_.is_name_set_) {
+        header_.is_name_set_ = true;
     } else {
         throw FileFormatException("Following definition of the universe name: " + buffer);
     }
@@ -61,39 +60,39 @@ void life::FileParser::ParseGameRules(const std::string &buffer) {
     if (buffer.empty())
         throw FileFormatException("The rules of the game are specified but not set: " + buffer);
 
-    if (buffer.substr(i, kFileFormat.kBirthRulePrefix.size()) != kFileFormat.kBirthRulePrefix)
+    if (buffer.substr(i, file_format::kBirthRulePrefix.size()) != file_format::kBirthRulePrefix)
         throw FileFormatException("Unknown parameter: " + std::to_string(buffer[i]) + " in " + buffer);
 
-    i += kFileFormat.kBirthRulePrefix.size();
+    i += file_format::kBirthRulePrefix.size();
 
     GetBirthRuleValues(buffer, i);
 
     if (i == buffer.length())
         throw FileFormatException("Not enough rules set: " + buffer);
 
-    if (buffer.substr(i, kFileFormat.kRuleSeparator.size()) != kFileFormat.kRuleSeparator)
+    if (buffer.substr(i, file_format::kRuleSeparator.size()) != file_format::kRuleSeparator)
         throw FileFormatException(
-                "Parts of the rules should be separated with " + kFileFormat.kRuleSeparator + ": " + buffer);
+                "Parts of the rules should be separated with " + file_format::kRuleSeparator + ": " + buffer);
 
-    i += kFileFormat.kRuleSeparator.size();
+    i += file_format::kRuleSeparator.size();
 
-    if (buffer.substr(i, kFileFormat.kSurvivalRulePrefix.size()) != kFileFormat.kSurvivalRulePrefix)
+    if (buffer.substr(i, file_format::kSurvivalRulePrefix.size()) != file_format::kSurvivalRulePrefix)
         throw FileFormatException("Unknown parameter: " + std::to_string(buffer[i]) + " in " + buffer);
 
-    i += kFileFormat.kSurvivalRulePrefix.size();
+    i += file_format::kSurvivalRulePrefix.size();
 
     GetSurvivalRuleValues(buffer, i);
 }
 
 void life::FileParser::GetGameRules(const std::string &buffer) {
-    if (std::isspace(buffer[kFileFormat.kGameRulesIdentifier.size()])) {
-        ParseGameRules(buffer.substr(kFileFormat.kGameRulesIdentifier.size() + 1));
+    if (std::isspace(buffer[file_format::kGameRulesIdentifier.size()])) {
+        ParseGameRules(buffer.substr(file_format::kGameRulesIdentifier.size() + 1));
     } else {
-        ParseGameRules(buffer.substr(kFileFormat.kGameRulesIdentifier.size()));
-        std::cerr << "No space after " + kFileFormat.kGameRulesIdentifier + ':' + buffer << "\n";
+        ParseGameRules(buffer.substr(file_format::kGameRulesIdentifier.size()));
+        std::cerr << "No space after " + file_format::kGameRulesIdentifier + ':' + buffer << "\n";
     }
-    if (!header_.is_rules_set) {
-        header_.is_rules_set = true;
+    if (!header_.is_rules_set_) {
+        header_.is_rules_set_ = true;
     } else {
         throw FileFormatException("Following definition of the game rules: " + buffer);
     }
@@ -101,34 +100,34 @@ void life::FileParser::GetGameRules(const std::string &buffer) {
 
 void life::FileParser::GetWidthAndHeight(const std::string &buffer) {
     std::istringstream ss(buffer);
-    ss >> header_.width;
-    ss >> header_.height;
+    ss >> header_.width_;
+    ss >> header_.height_;
     if (!ss.eof()) throw FileFormatException("Too many numbers of resolution parameters: " + buffer);
 }
 
 void life::FileParser::GetSizeOfField(const std::string &buffer) {
-    if (std::isspace(buffer[kFileFormat.kSizeOfFieldIdentifier.size()])) {
-        GetWidthAndHeight(buffer.substr(kFileFormat.kNameOfUniverseIdentifier.size() + 1));
+    if (std::isspace(buffer[file_format::kSizeOfFieldIdentifier.size()])) {
+        GetWidthAndHeight(buffer.substr(file_format::kNameOfUniverseIdentifier.size() + 1));
     } else {
-        GetWidthAndHeight(buffer.substr(kFileFormat.kNameOfUniverseIdentifier.size()));
-        std::cerr << "No space after " + kFileFormat.kSizeOfFieldIdentifier + ':' + buffer << "\n";
+        GetWidthAndHeight(buffer.substr(file_format::kNameOfUniverseIdentifier.size()));
+        std::cerr << "No space after " + file_format::kSizeOfFieldIdentifier + ':' + buffer << "\n";
     }
-    if (!header_.is_size_set) {
-        header_.is_size_set = true;
+    if (!header_.is_size_set_) {
+        header_.is_size_set_ = true;
     } else {
         throw FileFormatException("Following definition of the size of field: " + buffer);
     }
 }
 
 void life::FileParser::GetOption(const std::string &buffer) {
-    if (buffer.substr(0, kFileFormat.kNameOfUniverseIdentifier.size()) ==
-        kFileFormat.kNameOfUniverseIdentifier) {
+    if (buffer.substr(0, file_format::kNameOfUniverseIdentifier.size()) ==
+        file_format::kNameOfUniverseIdentifier) {
         GetNameOfUniverse(buffer);
-    } else if (buffer.substr(0, kFileFormat.kNameOfUniverseIdentifier.size()) ==
-               kFileFormat.kGameRulesIdentifier) {
+    } else if (buffer.substr(0, file_format::kNameOfUniverseIdentifier.size()) ==
+               file_format::kGameRulesIdentifier) {
         GetGameRules(buffer);
-    } else if (buffer.substr(0, kFileFormat.kSizeOfFieldIdentifier.size()) ==
-               kFileFormat.kSizeOfFieldIdentifier) {
+    } else if (buffer.substr(0, file_format::kSizeOfFieldIdentifier.size()) ==
+               file_format::kSizeOfFieldIdentifier) {
         GetSizeOfField(buffer);
     } else {
         throw FileFormatException("Unknown option " + buffer);
@@ -174,14 +173,14 @@ life::GameField life::FileParser::ReadUniverseFromFile(const std::string &filena
     std::string buffer;
 
     std::getline(input_file, buffer);
-    if (buffer != kFileFormat.kGameVersion) {
+    if (buffer != file_format::kGameVersion) {
         input_file.close();
         throw FileFormatException("Unsupported version: " + buffer);
     }
 
     while (std::getline(input_file, buffer)) {
         try {
-            if (buffer[0] == kFileFormat.kOptionSymbol) {
+            if (buffer[0] == file_format::kOptionSymbol) {
                 GetOption(buffer);
             } else if (std::isdigit(buffer[0])) {
                 break;
@@ -194,16 +193,16 @@ life::GameField life::FileParser::ReadUniverseFromFile(const std::string &filena
         }
     }
 
-    if (!header_.is_name_set) {
+    if (!header_.is_name_set_) {
         std::cerr << "Name not set. Use filename as default." << "\n";
-        header_.name_of_universe = filename;
+        header_.name_of_universe_ = filename;
     }
-    if (!header_.is_rules_set) {
+    if (!header_.is_rules_set_) {
         std::cerr << "Game rules not set. Use B3/S23 rule as default." << "\n";
         header_.rules_ = kDefaultRules;
     }
 
-    GameField game_field(header_.name_of_universe, header_.width, header_.height);
+    GameField game_field(header_.name_of_universe_, header_.width_, header_.height_);
 
     try {
         GetCoordinates(input_file, buffer, game_field);

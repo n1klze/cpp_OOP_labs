@@ -1,8 +1,8 @@
 #include "life_console_interface.h"
 
-const life::LifeConsoleInterface::SupportiveCommands life::LifeConsoleInterface::kSupportiveCommands{};
 
-life::LifeConsoleInterface::LifeConsoleInterface(const command_parser::CommandLineParser::Data &start_options) {
+life::LifeConsoleInterface::LifeConsoleInterface(
+        const command_parser::CommandLineParser::ParsedCmdParameters &start_options) {
     game_handler_ = Game(start_options);
 }
 
@@ -20,10 +20,10 @@ namespace {
     }
 
     void PrintGameRules(std::ostream &output, const life::Game &game_handler) {
-        output << "\nGame rules: " << life::FileParser::kFileFormat.kBirthRulePrefix;
+        output << "\nGame rules: " << file_format::kBirthRulePrefix;
         for (auto i: game_handler.game_rules().birth())
             output << i;
-        output << life::FileParser::kFileFormat.kRuleSeparator << life::FileParser::kFileFormat.kSurvivalRulePrefix;
+        output << file_format::kRuleSeparator << file_format::kSurvivalRulePrefix;
         for (auto i: game_handler.game_rules().survival())
             output << i;
         output << '\n';
@@ -44,12 +44,12 @@ namespace {
 void life::LifeConsoleInterface::Dump(const std::string &output_filename) {
     std::ofstream output_file(output_filename);
     output_file.is_open() ?: throw std::invalid_argument("Unable to open output file.");
-    output_file << life::FileParser::kFileFormat.kGameVersion << '\n';
+    output_file << file_format::kGameVersion << '\n';
 
-    output_file << life::FileParser::kFileFormat.kNameOfUniverseIdentifier << ' '
+    output_file << file_format::kNameOfUniverseIdentifier << ' '
                 << game_handler_.game_field().universe_name() << '\n';
 
-    output_file << life::FileParser::kFileFormat.kGameRulesIdentifier << ' ';
+    output_file << file_format::kGameRulesIdentifier << ' ';
     PrintGameRules(output_file, game_handler_);
 
     PrintLiveCellsCoordinatesToFile(output_file, game_handler_);
@@ -58,7 +58,7 @@ void life::LifeConsoleInterface::Dump(const std::string &output_filename) {
 }
 
 void life::LifeConsoleInterface::SimulateGameplay() {
-    for (size_t i = 0; i < game_handler_.start_options().iterations; ++i) {
+    for (size_t i = 0; i < game_handler_.start_options().iterations(); ++i) {
         game_handler_.MakeMove();
     }
     Print();
@@ -72,7 +72,7 @@ void life::LifeConsoleInterface::SimulateGameplay() {
         std::istringstream ss(buffer);
         while (ss >> word)
             args.push_back(word);
-        if (args[0] == kSupportiveCommands.kDumpCommand) {
+        if (args[0] == supportive_commands::kDumpCommand) {
             if (args.size() == 1)
                 std::cerr << "Output filename not set. Try again\n";
             if (args.size() > 2)
@@ -82,7 +82,7 @@ void life::LifeConsoleInterface::SimulateGameplay() {
             } catch (const std::exception &except) {
                 std::cerr << except.what() << std::endl;
             }
-        } else if (args[0] == kSupportiveCommands.kTickCommand || args[0] == kSupportiveCommands.kShortTickCommand) {
+        } else if (args[0] == supportive_commands::kTickCommand || args[0] == supportive_commands::kShortTickCommand) {
             int number_of_iterations = 1;
             if (args.size() > 1) {
                 try {
@@ -96,9 +96,9 @@ void life::LifeConsoleInterface::SimulateGameplay() {
             for (int i = 0; i < number_of_iterations; ++i)
                 game_handler_.MakeMove();
             Print();
-        } else if (args[0] == kSupportiveCommands.kExitCommand) {
+        } else if (args[0] == supportive_commands::kExitCommand) {
             break;
-        } else if (args[0] == kSupportiveCommands.kHelpCommand) {
+        } else if (args[0] == supportive_commands::kHelpCommand) {
             PrintUsage();
         } else {
             std::cout << "Unsupported command. Try again.";
