@@ -13,4 +13,4 @@ else()
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
-add_executable(${exe_name} main.cpp tuple_printer.h)
+add_executable(${exe_name} main.cpp tuple_printer.h csv_parser.h)
