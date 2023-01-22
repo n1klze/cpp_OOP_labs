@@ -13,9 +13,13 @@ int main() {
         std::cerr << "File error.";
         return EXIT_FAILURE;
     }
-    parser::CSVParser<int, std::string> parser(file, 0);
-    for (const auto &rs: parser)
-        std::cout << rs << std::endl;
+    try {
+        parser::CSVParser<int, std::string> parser(file, 0);
+        for (const auto &rs: parser)
+            std::cout << rs << std::endl;
+    } catch (const std::exception &except) {
+        std::cerr << except.what() << std::endl;
+    }
 
     return EXIT_SUCCESS;
 }
