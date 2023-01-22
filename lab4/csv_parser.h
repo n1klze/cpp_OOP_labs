@@ -33,7 +33,7 @@ namespace parser {
             return ParseElements<I + 1>(is, tuple);
     }
 
-    template<typename... Args> //std::ifstream &operator>>(std::ifstream &is, std::tuple<Args...> &tuple, size_t line) {
+    template<typename... Args>
     std::ifstream &ParseLine(std::ifstream &is, std::tuple<Args...> &tuple, size_t line) {
         std::string str;
         getline(is, str);
@@ -56,7 +56,7 @@ namespace parser {
             explicit Iterator(std::ifstream *in) :
                     input_(in) {
                 if (in != nullptr)
-                    ParseLine(*in, current_row_, position_); //(*in) >> std::make_pair(current_row_, position_);
+                    ParseLine(*in, current_row_, position_);
                 else position_ = -1;
             }
 
@@ -77,7 +77,7 @@ namespace parser {
             Iterator &operator++() {
                 if (input_ == nullptr)
                     return *this;
-                ParseLine(*input_, current_row_, position_); //(*input_) >> std::make_pair(current_row_, position_);
+                ParseLine(*input_, current_row_, position_);
                 if (input_->eof()) {
                     input_ = nullptr;
                     position_ = -1;
@@ -118,39 +118,6 @@ namespace parser {
     private:
         std::ifstream *input_;
     };
-
-   /* template<size_t I, typename... Args>
-    auto ParseElements(std::istringstream &is, std::tuple<Args...> &tuple) {
-        std::string current_element;
-        std::getline(is, current_element, ',');
-        std::stringstream ss(current_element);
-        try {
-            if (!(ss >> std::get<I>(tuple)))
-                throw std::invalid_argument("Bad element\n");
-            if (!ss.eof())
-                throw std::invalid_argument("Bad element\n");
-        } catch (const std::exception &except) {
-            throw I + 1;
-        }
-        if constexpr (I + 1 < sizeof...(Args))
-            return ParseElements<I + 1>(is, tuple);
-    }
-
-    template<typename... Args>
-    //std::ifstream &operator>>(std::ifstream &is, std::tuple<Args...> &tuple, size_t line) {
-    std::ifstream &ParseLine(std::ifstream &is, std::tuple<Args...> &tuple, size_t line) {
-        std::string str;
-        getline(is, str);
-        if (str.empty())
-            return is;
-        std::istringstream instr(str);
-        try {
-            ParseElements<0>(instr, tuple);
-        } catch (const size_t column) {
-            throw ParsingException("Parsing error in: " + std::to_string(line + 1) + " line, " + std::to_string(column) + " column.");
-        }
-        return is;
-    }*/
 } //namespace parser
 
 #endif //LAB4_CSV_PARSER_H
