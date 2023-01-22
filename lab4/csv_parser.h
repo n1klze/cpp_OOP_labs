@@ -6,53 +6,53 @@
 #include <tuple>
 
 namespace parser {
-    template<class... Args>
+    template<typename... Args>
     class CSVParser {
     public:
         class Iterator {
         public:
             explicit Iterator(std::ifstream *in) :
-                    input(in) {
+                    input_(in) {
                 if (in != nullptr)
-                    (*in) >> currentRow;
-                else position = -1;
+                    (*in) >> current_row_;
+                else position_ = -1;
             }
 
             ~Iterator() = default;
 
             bool operator==(const Iterator &b) const {
-                if (input != b.input)
+                if (input_ != b.input_)
                     return false;
-                return position == b.position;
+                return position_ == b.position_;
             }
 
             bool operator!=(const Iterator &b) const {
-                if (input != b.input)
+                if (input_ != b.input_)
                     return true;
-                return position != b.position;
+                return position_ != b.position_;
             }
 
             Iterator &operator++() {
-                if (input == nullptr)
+                if (input_ == nullptr)
                     return *this;
-                (*input) >> currentRow;
-                if (input->eof()) {
-                    input = nullptr;
-                    position = -1;
+                (*input_) >> current_row_;
+                if (input_->eof()) {
+                    input_ = nullptr;
+                    position_ = -1;
                     return *this;
                 }
-                position++;
+                position_++;
                 return *this;
             }
 
             std::tuple<Args...> &operator*() {
-                return currentRow;
+                return current_row_;
             }
 
         private:
-            std::ifstream *input;
-            size_t position = 0;
-            std::tuple<Args...> currentRow;
+            std::ifstream *input_;
+            size_t position_ = 0;
+            std::tuple<Args...> current_row_;
         };
 
         CSVParser(std::ifstream &in, int skipCount) {
@@ -60,11 +60,11 @@ namespace parser {
             std::string str;
             for (int index = 0; index < skipCount; index++)
                 getline(in, str);
-            input = &in;
+            input_ = &in;
         }
 
         Iterator begin() {
-            return Iterator(input);
+            return Iterator(input_);
         }
 
         Iterator end() {
@@ -72,29 +72,29 @@ namespace parser {
         }
 
     private:
-        std::ifstream *input;
+        std::ifstream *input_;
     };
-} //namespace parser
 
-template<size_t I, typename... Args>
-auto ParseElements(std::istringstream &is, std::tuple<Args...> &tuple) {
-    std::string current_element;
-    std::getline(is, current_element, ',');
-    std::stringstream ss(current_element);
-    ss >> std::get<I>(tuple);
-    if constexpr (I + 1 < sizeof...(Args))
-        return ParseElements<I + 1>(is, tuple);
-}
+    template<size_t I, typename... Args>
+    auto ParseElements(std::istringstream &is, std::tuple<Args...> &tuple) {
+        std::string current_element;
+        std::getline(is, current_element, ',');
+        std::stringstream ss(current_element);
+        ss >> std::get<I>(tuple);
+        if constexpr (I + 1 < sizeof...(Args))
+            return ParseElements<I + 1>(is, tuple);
+    }
 
-template<typename... Args>
-std::ifstream &operator>>(std::ifstream &is, std::tuple<Args...> &tuple) {
-    std::string str;
-    getline(is, str);
-    if (str.empty())
+    template<typename... Args>
+    std::ifstream &operator>>(std::ifstream &is, std::tuple<Args...> &tuple) {
+        std::string str;
+        getline(is, str);
+        if (str.empty())
+            return is;
+        std::istringstream instr(str);
+        ParseElements<0>(instr, tuple);
         return is;
-    std::istringstream instr(str);
-    ParseElements<0>(instr, tuple);
-    return is;
-}
+    }
+} //namespace parser
 
 #endif //LAB4_CSV_PARSER_H

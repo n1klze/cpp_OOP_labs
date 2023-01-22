@@ -9,6 +9,10 @@ int main() {
     std::cout << t << std::endl;
 
     std::ifstream file("..\\test.csv");
+    if (!file.is_open()) {
+        std::cerr << "File error.";
+        return EXIT_FAILURE;
+    }
     parser::CSVParser<int, std::string> parser(file, 0);
     for (const auto &rs: parser)
         std::cout << rs << std::endl;
